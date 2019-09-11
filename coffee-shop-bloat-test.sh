@@ -17,17 +17,29 @@
 #	tcp_nup-YYYY-MM-DDThhmmss.xxxxxx.Coffee_Shop_Name.flent.gz
 #	tcp_ndown-YYYY-MM-DDThhmmss.xxxxxx.Coffee_Shop_Name.flent.gz
 
+# Copyright (c) 2019 - Rich Brown rich.brown@blueberryhillsoftware.com
+# GPLv2
+
+CSN=`hostname`        # Coffee Shop Name - default to the host name
 # Get the Coffee Shop Name and grep " " to "_"
-if [ $# -ne 0 ]
+if [ $# -eq 1 ]
 then
-  CSN=${1// /_}
-else
-  H=`hostname`        # Otherwise, just use the host name
-  CSN="Tested_from_$H"
+  CSN=$1  
 fi
+CSN=${CSN// /_}
 
-F="flent -x -H flent-fremont.bufferbloat.net -t $CSN"
+# Other global variables
+H="flent-fremont.bufferbloat.net"
+PINGHOST="1.1.1.1"
+F="flent -x -H $H -t $CSN --te=ping_hosts=$PINGHOST"
 
+# Print baseline latency
+echo "Testing from $CSN to $H"
+echo "Measuring baseline latency to $PINGHOST..."
+fping -D -q -c 5 $PINGHOST # ping five times
+echo ""
+
+# Run successive Flent tests: tcp_ndown, tcp_nup, rrul, rrul_be
 $F --te=download_streams=4 tcp_ndown
 $F --te=upload_streams=4 tcp_nup # removed --socket-stats option for macOS
 # $F --te=upload_streams=4 tcp_2up_square # not useful enough
