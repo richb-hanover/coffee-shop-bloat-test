@@ -17,7 +17,7 @@ To run the script, use the command below. Place the coffee shop name in quotes:
 
 `sh coffee-shop-bloat-test.sh "Coffee Shop Name"`
 
-This will run Flent several times with various options.
+This will run several Flent tests in succession: tcp\_ndown, tcp\_nup, rrul, rrul\_be.
 Each of the tests runs for 70 seconds, so the full suite of tests will take five or six minutes.
 Each test outputs its results to the terminal in this form:
 
