@@ -1,2 +1,4 @@
 # Ignore result files
 *.gz
+*.log
+junk.txt
