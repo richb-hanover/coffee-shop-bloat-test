@@ -17,32 +17,35 @@ To run the script, use the command below. Place the coffee shop name in quotes:
 
 `sh coffee-shop-bloat-test.sh "Coffee Shop Name"`
 
-This will run several Flent tests in succession: tcp\_ndown, tcp\_nup, rrul, rrul\_be.
+The script first measures baseline latency to a nearby IPv4 and IPv6 host. 
+
+It then runs several Flent tests in succession: tcp\_ndown, tcp\_nup, rrul, rrul\_be.
 Each of the tests runs for 70 seconds, so the full suite of tests will take five or six minutes.
 Each test outputs its results to the terminal in this form:
 
 ```
 bash-3.2$ sh coffee-shop-bloat-test.sh "Coffee Shop Name"
-Testing from Coffee_Shop_Name to flent-fremont.bufferbloat.net
-Measuring baseline latency to 1.1.1.1...
-1.1.1.1 : xmt/rcv/%loss = 5/5/0%, min/avg/max = 15.8/16.1/16.3
+Testing from Richs-MBP-10337.lan to flent-fremont.bufferbloat.net
+Measuring baseline latency to 1.1.1.1 and 2606:4700:4700::1111...
+1.1.1.1 : xmt/rcv/%loss = 5/5/0%, min/avg/max = 15.1/15.8/16.1
+2606:4700:4700::1111 : xmt/rcv/%loss = 5/5/0%, min/avg/max = 21.0/21.5/21.9
 
-Started Flent 1.3.0 using Python 2.7.15.
+Started Flent 1.9.9-git-436d5b6 using Python 3.7.3.
 Starting tcp_ndown test. Expected run time: 70 seconds.
-Data file written to ./tcp_ndown-2019-09-11T135217.023272.Coffee_Shop_Name.flent.gz.
+Data file written to ./tcp_ndown-2019-09-15T123123.380936.Richs-MBP-10337_lan.flent.gz
 
-Summary of tcp_ndown test run from 2019-09-11 17:52:17.023272
-  Title: 'Coffee_Shop_Name'
+Summary of tcp_ndown test run from 2019-09-15 16:31:23.380936
+  Title: 'Richs-MBP-10337.lan'
 
                                            avg       median          # data pts
- Ping (ms) ICMP                 :       100.19        99.35 ms              350
- Ping (ms) ICMP 1.1.1.1 (extra) :        23.31        21.75 ms              350
- TCP download avg               :         1.65         1.70 Mbits/s         301
- TCP download sum               :         6.58         6.79 Mbits/s         301
- TCP download::1                :         1.58         1.62 Mbits/s         292
- TCP download::2                :         1.62         1.68 Mbits/s         292
- TCP download::3                :         1.70         1.75 Mbits/s         286
- TCP download::4                :         1.70         1.75 Mbits/s         286
+ Ping (ms) ICMP                 :       117.30       109.00 ms              350
+ Ping (ms) ICMP 1.1.1.1 (extra) :        35.25        31.20 ms              350
+ TCP download avg               :         1.69          N/A Mbits/s         353
+ TCP download sum               :         6.77          N/A Mbits/s         353
+ TCP download::1                :         1.92         1.95 Mbits/s         353
+ TCP download::2                :         1.79         1.84 Mbits/s         353
+ TCP download::3                :         1.46         1.45 Mbits/s         353
+ TCP download::4                :         1.60         1.59 Mbits/s         353
  ...
 ```
 
