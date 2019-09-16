@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Coffee Shop Bloat Test
 # Collect objective measurements of bufferbloat in a coffee shop (or anywhere)
@@ -41,7 +41,7 @@ if [ $# -eq 1 ]
 then
   CSN=$1  
 fi
-CSN=${CSN// /_}
+CSN=`echo $CSN | tr -s ' ' | tr ' ' '_'`
 
 # Build the base Flent command
 F="flent -x -H $H -t $CSN --te=ping_hosts=$PINGHOST4"
