@@ -26,14 +26,17 @@
 # Note: Early versions of this script removed the --socket-stats option
 #   because that's not currently available for macOS
 
-# Copyright (c) 2019 - Rich Brown rich.brown@blueberryhillsoftware.com
+# Copyright (c) 2019-2020 - Rich Brown rich.brown@blueberryhillsoftware.com
 # GPLv2
 
 # Global variables
 H="flent-fremont.bufferbloat.net" # default Flent server
-PINGHOST4="1.1.1.1"               # Cloudflare Anycast IPv4 DNS resolver
-PINGHOST6="2606:4700:4700::1111"  # Cloudflare Anycast IPv6 DNS resolver
-CSN=`hostname`                    # Coffee Shop Name - default to the host name
+CSN=`hostname`                   # Coffee Shop Name - default to the host name
+# Cloudflare Anycast DNS resolver  is named one.one.one.one.
+# We'll ping it (v4 or v6) when testing
+# IPv4: 1.1.1.1 or 1.0.0.1 
+# IPv6: 2606:4700:4700::1111 or 2606:4700:4700::1001
+PINGHOST="one.one.one.one"       # Cloudflare Anycast IPv4 or IPv6 DNS resolver
 
 # Process any arguments
 # Get the Coffee Shop Name and grep " " to "_"
@@ -44,14 +47,14 @@ fi
 CSN=`echo $CSN | tr -s ' ' | tr ' ' '_'`
 
 # Build the base Flent command
-F="flent -x -H $H -t $CSN --te=ping_hosts=$PINGHOST4"
+F="flent -x -H $H -t $CSN --te=ping_hosts=$PINGHOST"
 
 # ----- Start the testing -----
 # Print baseline latency for IPv4 & IPv6 (no error if IPv6 not available)
 echo "Testing from $CSN to $H"
-echo "Measuring baseline latency to $PINGHOST4 and $PINGHOST6..."
-fping -D -q -c 5 -4 $PINGHOST4 # ping five times
-fping -D -q -c 5 -6 $PINGHOST6 # ping five times
+echo "Measuring IPv4 & IPv6 baseline latency..." # ping five times each
+fping -D -q -c 5 -4 one.one.one.one | printf "IPv4: %s"
+fping -D -q -c 5 -6 one.one.one.one | printf "IPv6: %s"
 echo ""
 
 # Run successive Flent tests: tcp_ndown, tcp_nup, rrul, rrul_be

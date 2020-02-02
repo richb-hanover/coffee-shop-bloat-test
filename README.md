@@ -13,6 +13,7 @@ the owner, help 'em get QoS configured right on their router, show'd
 
 Now you too can "instrument" your local coffee shop, with the goal of making the world's internet access a little bit better. 
 
+## Run the Bloat Test
 To run the script, use the command below. Place the coffee shop name in quotes:
 
 `sh coffee-shop-bloat-test.sh "Coffee Shop Name"`
@@ -51,6 +52,8 @@ Summary of tcp_ndown test run from 2019-09-15 16:31:23.380936
 
 The script also saves four result files in the local directory, tagged with the date/time, coffee shop name, and the flent test name.
 
+## Display the results as plots
+
 To view the results in the Flent GUI, enter:
 
 `flent --gui <result-file-name>`
@@ -59,3 +62,5 @@ To view the results in the Flent GUI, enter:
 You'll see an image like this:
 
 ![Sample run of Flent GUI](https://i.imgur.com/kUI553T.jpg)
+
+For a detailed explanation of the plots, see the [RRUL Chart Explanation](https://www.bufferbloat.net/projects/bloat/wiki/RRUL_Chart_Explanation/)
