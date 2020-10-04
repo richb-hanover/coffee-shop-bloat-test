@@ -29,35 +29,58 @@
 # Copyright (c) 2019-2020 - Rich Brown rich.brown@blueberryhillsoftware.com
 # GPLv2
 
-# Global variables
-H="flent-fremont.bufferbloat.net" # default Flent server
-CSN=`hostname`                   # Coffee Shop Name - default to the host name
-# Cloudflare Anycast DNS resolver  is named one.one.one.one.
-# We'll ping it (v4 or v6) when testing
-# IPv4: 1.1.1.1 or 1.0.0.1 
-# IPv6: 2606:4700:4700::1111 or 2606:4700:4700::1001
-PINGHOST="one.one.one.one"       # Cloudflare Anycast IPv4 or IPv6 DNS resolver
+# Constants
+# Cloudflare Anycast DNS resolvers - we'll ping them (v4 or v6) when testing
+# PINGHOST4=1.1.1.1                 # or 1.0.0.1 
+# PINGHOST6=2606:4700:4700::1111    # or 2606:4700:4700::1001
+PINGHOST4="one.one.one.one"         # looks as if these names work for both v4 & v6
+PINGHOST6="one.one.one.one"
 
-# Process any arguments
-# Get the Coffee Shop Name and grep " " to "_"
-if [ $# -eq 1 ]
-then
-  CSN=$1  
-fi
-CSN=`echo $CSN | tr -s ' ' | tr ' ' '_'`
+# Global variables
+CSN=`hostname`                    # Coffee Shop Name - default to this computer's host name
+H="flent-fremont.bufferbloat.net" # default Flent server for this test
+V46="-4"                          # default to IPv4
+PINGHOST=$PINGHOST4               # default to IPv4
+TEST_DIRECTORY="Test_Results"     # Save tests to a separate directory
+
+# extract options and their arguments into variables.
+while [ $# -gt 0 ] 
+do
+    case "$1" in
+      -4) PINGHOST=$PINGHOST4 ;
+		  V46="-4" ; 
+		  shift 1 ;;   
+      -6) PINGHOST=$PINGHOST6 ;
+		  V46="-6" ; 
+		  shift 1 ;;   
+      -H|--host)
+          case "$2" in
+              "") echo "Missing hostname" ; exit 1 ;;
+              *) H=$2 ; shift 2 ;;
+          esac ;;
+      ?|--help) 
+		  echo 'Usage: sh coffee-shop-bloat-test.sh "Coffee Shop Name" [ -H netperf-server ] [ -4 | -6 ]'; exit 1 ;;
+      *) CSN=$1
+		 CSN=`echo $CSN | tr -s ' ' | tr ' ' '_'`
+		 shift 1
+		;;
+    esac
+done
 
 # Build the base Flent command
-F="flent -x -H $H -t $CSN --te=ping_hosts=$PINGHOST"
+F="flent -x $V46 -H $H -t $CSN --te=ping_hosts=$PINGHOST"
 
 # ----- Start the testing -----
 # Print baseline latency for IPv4 & IPv6 (no error if IPv6 not available)
+echo "======== Coffee Shop Bloat Test ========"
 echo "Testing from $CSN to $H"
 echo "Measuring IPv4 & IPv6 baseline latency..." # ping five times each
-fping -D -q -c 5 -4 one.one.one.one | printf "IPv4: %s"
-fping -D -q -c 5 -6 one.one.one.one | printf "IPv6: %s"
+fping -D -q -c 5 -4 $PINGHOST4 | printf "IPv4: %s"
+fping -D -q -c 5 -6 $PINGHOST6 | printf "IPv6: %s"
 echo ""
 
 # Run successive Flent tests: tcp_ndown, tcp_nup, rrul, rrul_be
+cd $TEST_DIRECTORY                     # save test results in their own directory
 $F --te=download_streams=4 tcp_ndown
 $F --te=upload_streams=4 tcp_nup 
 $F rrul

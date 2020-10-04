@@ -3,3 +3,6 @@
 *.log
 junk.txt
 *.zip
+
+# Don't archive test results
+Test_Results/
