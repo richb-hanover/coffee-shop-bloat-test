@@ -67,6 +67,9 @@ do
     esac
 done
 
+# Create the $TEST_DIRECTORY if it doesn't exist
+[ ! -d "./$TEST_DIRECTORY" ] && mkdir $TEST_DIRECTORY
+
 # Build the base Flent command
 F="flent -x $V46 -H $H -t $CSN --te=ping_hosts=$PINGHOST"
 
