@@ -71,7 +71,7 @@ done
 [ ! -d "./$TEST_DIRECTORY" ] && mkdir $TEST_DIRECTORY
 
 # Build the base Flent command
-F="flent -x $V46 -H $H -t $CSN --te=ping_hosts=$PINGHOST"
+F="flent -x $V46 -H $H -t $CSN --test-parameter=ping_hosts=$PINGHOST"
 
 # ----- Start the testing -----
 # Print baseline latency for IPv4 & IPv6 (no error if IPv6 not available)
@@ -84,7 +84,7 @@ echo ""
 
 # Run successive Flent tests: tcp_ndown, tcp_nup, rrul, rrul_be
 cd $TEST_DIRECTORY                     # save test results in their own directory
-$F --te=download_streams=4 tcp_ndown
-$F --te=upload_streams=4 tcp_nup 
+$F --test-parameter=download_streams=4 tcp_ndown
+$F --test-parameter=upload_streams=4 tcp_nup 
 $F rrul
 $F rrul_be
